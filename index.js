@@ -37,7 +37,7 @@ const displayPhoto = (data) => {
               alt="${photo.alt}"
             />
             <div class="card-body">
-              <p class="card-text">${photo.alt}</p>
+              <p class="card-text">${photo.alt ? photo.alt : 'null'}</p>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ const searchValue=()=>{
   setTimeout(() => {
     fetchUrl(url);
     document.getElementById("loader").style.display = "none";
-    document.getElementById('search-image').value="";
+    document.getElementById('search-image').value=query;
   }, 3000);
 }
 //search event
@@ -94,7 +94,7 @@ const prevBtnFunc=()=>{
   setTimeout(() => {
     fetchUrl(url);
     document.getElementById("loader").style.display = "none";
-    document.getElementById('search-image').value="";
+    document.getElementById('search-image').value=query;
   }, 3000);
 
   
@@ -124,7 +124,7 @@ const nextBtnFunc=()=>{
   setTimeout(() => {
     fetchUrl(url);
     document.getElementById("loader").style.display = "none";
-    document.getElementById('search-image').value="";
+    document.getElementById('search-image').value=query;
   }, 3000);
 }
 
