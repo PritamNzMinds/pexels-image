@@ -1,7 +1,8 @@
 const apiKey = "eWYyc0ZxlYbtsqor0WLsLsc0B8CAvwTybIFbA0Vp8j7QKf0AyKoI01Hl";
 let page = 1;
 let per_page = 8;
-let url = `https://api.pexels.com/v1/search?query=food?page=${page}&per_page=${per_page}`;
+let url = `https://api.pexels.com/v1/curated?page=${page}&per_page=${per_page}`;
+var query="";
 
 // fetch url
 
@@ -14,17 +15,18 @@ const fetchUrl = async (url) => {
     });
     const data = await response.json();
     console.log(data);
-    displayPhoto(data.photos);
-    displayPaginationButton(data);
+    displayPhoto(data);
+    displayPrevBtn(data);
+    displayNextBtn(data);
   } catch (error) {
     console.log(error);
   }
 };
 
 // display photo
-const displayPhoto = (photos) => {
+const displayPhoto = (data) => {
   const card = document.getElementById("card-data");
-  const cardHtml = photos
+  const cardHtml = data.photos
     .map((photo) => {
       return `
         <div class="col-12 col-md-6 col-lg-3 mt-2">
@@ -44,12 +46,19 @@ const displayPhoto = (photos) => {
     })
     .join("");
   card.innerHTML = cardHtml;
+
+
+  const pageShow=document.getElementById("page-show");
+  pageShow.innerText=`Page no: ${data.page}`
 };
 
 // search function
 const searchValue=()=>{
-  const query=document.getElementById('search-image').value;
-  console.log(query);
+  query=document.getElementById('search-image').value;
+  if(!query){
+    alert("Enter anything to search");
+    return;
+  }
   page=1;
   url = `https://api.pexels.com/v1/search?query=${query}?page=${page}&per_page=${per_page}`;
 
@@ -64,57 +73,68 @@ const searchValue=()=>{
 const searchBtn=document.getElementById("button-addon2");
 searchBtn.addEventListener("click",searchValue);
 
+// display prev btn
+const displayPrevBtn=(data)=>{
+  const prevBtn=document.getElementById("prev-btn");
+  if(data.page===1){
+    prevBtn.disabled=true
+  }else{
+    prevBtn.disabled=false
+  }
+}
+const prevBtnFunc=()=>{
+  page=page-1;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// pagination button
-// const displayPaginationButton = (data) => {
-//   const totalPage = data.total_results / per_page;
-//   const paginationDiv = document.getElementById("pagination-div");
-//   console.log(totalPage);
-
-//   for (let i = 1; i <= totalPage; i++) {
-//     const li = document.createElement("li");
-//     li.classList.add("page-item");
-
-//     const a = document.createElement("a");
-//     a.classList.add("page-link", "pagination-link");
-//     a.href = "#";
-//     a.textContent = i;
-
-//     li.appendChild(a);
-//     paginationDiv.appendChild(li);
-//   }
-// };
-
-// pagination event
-
-const paginationEvent = (event) => {
-  page = event.target.innerText;
-  url = `https://api.pexels.com/v1/curated?page=${page}&per_page=${per_page}`;
-
+  if(query){
+    url = `https://api.pexels.com/v1/search?page=${page}&per_page=${per_page}&query=${query}%3Fpage%3D1`;
+  }else{
+    url=`https://api.pexels.com/v1/curated?page=${page}&per_page=${per_page}`
+  }
   document.getElementById("loader").style.display = "block";
   setTimeout(() => {
     fetchUrl(url);
     document.getElementById("loader").style.display = "none";
-  }, 1000);
-};
+    document.getElementById('search-image').value="";
+  }, 3000);
 
-const paginationLinks = document.querySelectorAll(".pagination-link");
+  
+}
 
-paginationLinks.forEach((link) => {
-  link.addEventListener("click", paginationEvent);
-});
+// display next btn
+const displayNextBtn=(data)=>{
+  const nextBtn=document.getElementById("next-btn");
+  const totalPage = data.total_results / per_page;
+  if(page===totalPage){
+    nextBtn.disabled=true
+  }else{
+    nextBtn.disabled=false
+  }
 
+}
+
+const nextBtnFunc=()=>{
+  page=page+1;
+  console.log(query);
+  if(query){
+    url = `https://api.pexels.com/v1/search?page=${page}&per_page=${per_page}&query=${query}%3Fpage%3D1`;
+  }else{
+    url=`https://api.pexels.com/v1/curated?page=${page}&per_page=${per_page}`
+  }
+  document.getElementById("loader").style.display = "block";
+  setTimeout(() => {
+    fetchUrl(url);
+    document.getElementById("loader").style.display = "none";
+    document.getElementById('search-image').value="";
+  }, 3000);
+}
+
+
+// next and prev button event
+const prevBtn=document.getElementById("prev-btn");
+const nextBtn=document.getElementById("next-btn");
+
+prevBtn.addEventListener("click",prevBtnFunc);
+nextBtn.addEventListener("click",nextBtnFunc);
+
+// initialize
 fetchUrl(url);
