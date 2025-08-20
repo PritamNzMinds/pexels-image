@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.input-group {
+  gap: 2px;
+}
+
+.input-group .form-control,
+.input-group .btn {
+  border-radius: 50px;
+}
+
+.img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.card {
+  border:1px solid gray;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.card-text {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
